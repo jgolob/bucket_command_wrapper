@@ -37,9 +37,6 @@ class BCW():
             No command provided on command line or as an environmental variable (bcw_command)
             """)
 
-        print(type(args.download_files))
-        print(args.download_files)
-
         if not args.download_files:
             self.download_files = []
         else:
