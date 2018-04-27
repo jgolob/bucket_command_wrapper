@@ -15,10 +15,10 @@ bucket_command_wrapper [-h] [--command COMMAND]
                               [--upload-files UPLOAD_FILES]
 
 Wrapper to pull from buckets, run a command, and push back to buckets.
-example: bucket_command_wrapper.py -c 'echo hello' -DF
-s3://bucket/key/path.txt::/mnt/inputs/path.txt::rw
-s3://bucket/key/path2.txt::/mnt/inputs/path2.txt::ro -UF
-/mnt/outputs/path.txt::s3://bucket/key/path.txt
+example: bucket_command_wrapper.py -c 'echo hello' 
+-DF s3://bucket/key/path.txt::/mnt/inputs/path.txt::rw
+-DF s3://bucket/key/path2.txt::/mnt/inputs/path2.txt::ro 
+-UF /mnt/outputs/path.txt::s3://bucket/key/path.txt
 
 optional arguments:
   -h, --help            show this help message and exit
