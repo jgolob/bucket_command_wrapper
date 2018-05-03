@@ -59,10 +59,12 @@ class BCW():
         self.download_files_from_bucket()
 
         # Run the command
-        subprocess.run(
+        proc = subprocess.run(
             args.command,
             shell=True
             )
+
+        proc.check_returncode()
 
         # Upload files
         self.upload_files_to_bucket()
