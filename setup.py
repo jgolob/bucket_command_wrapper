@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='bucket_command_wrapper',
-    version='0.2.0',
+    version='0.3.0',
     description="""Wrapper to facilitate downloading / uploading files
       from buckets (i.e. S3) into containers (i.e. docker) and running an arbitrary command.
       """,
