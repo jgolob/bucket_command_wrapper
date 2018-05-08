@@ -3,6 +3,7 @@ import argparse
 import os
 import sys
 import re
+import sys
 import subprocess
 
 #
@@ -59,18 +60,30 @@ class BCW():
         self.download_files_from_bucket()
 
         # Run the command
-        proc = subprocess.run(
+        proc = subprocess.call(
             args.command,
             shell=True
             )
+        # Python2 behavior
+        if isinstance(proc, int):
+            return_code = proc
+        # Python3 behavior
+        else:
+            return_code = proc.returncode
 
-        proc.check_returncode()
+        # Check the return code
+        if return_code != 0:
+            # Delete the temporary files, if not otherwise specified
+            if not args.keep_temp_files:
+                self.delete_temporary_files()
+            # Raise the return code and exit
+            sys.exit(return_code)
 
         # Upload files
         self.upload_files_to_bucket()
 
         # Delete the temporary files, if not otherwise specified
-        if not args.keep_temporary_files:
+        if not args.keep_temp_files:
             self.delete_temporary_files()
 
     def build_parser(self):
@@ -249,7 +262,7 @@ class BCW():
     def delete_temporary_files(self):
         for file in self.download_files + self.upload_files:
             if os.path.exists(file["container_path"]):
-                print("Deleting temporary file: {}".format(file["container_path"]))
+                print(("Deleting temporary file: {}".format(file["container_path"])))
                 os.remove(file["container_path"])
 
 
