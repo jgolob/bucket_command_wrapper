@@ -69,6 +69,10 @@ class BCW():
         # Upload files
         self.upload_files_to_bucket()
 
+        # Delete the temporary files, if not otherwise specified
+        if not args.keep_temporary_files:
+            self.delete_temporary_files()
+
     def build_parser(self):
         parser = argparse.ArgumentParser(description="""
             Wrapper to pull from buckets, run a command, and push back to buckets.
@@ -76,7 +80,8 @@ class BCW():
                 bucket_command_wrapper.py -c 'echo hello' \
                 -DF s3://bucket/key/path.txt::/mnt/inputs/path.txt::rw \
                 s3://bucket/key/path2.txt::/mnt/inputs/path2.txt::ro \
-                -UF /mnt/outputs/path.txt::s3://bucket/key/path.txt
+                -UF /mnt/outputs/path.txt::s3://bucket/key/path.txt \
+                --keep-temp-files
             """)
 
         if len(sys.argv) < 2:
@@ -112,6 +117,12 @@ class BCW():
             container_path::bucket_file_uri
             Mode is presumed to be w. (If you want rw / a / use input in mode 'rw')
             e.g: /mnt/outputs/path.txt::s3://bucket/key/path.txt""",
+        )
+        parser.add_argument(
+            '--keep-temp-files',
+            '-k',
+            action='store_true',
+            help="""If specified, keep temporary files. Default behavior is to delete them.""",
         )
 
         return parser
@@ -234,6 +245,12 @@ class BCW():
                 raise Exception("Invalid bucket provider {}".format(
                     df['bucket_provider'])
                     )
+
+    def delete_temporary_files(self):
+        for file in self.download_files + self.upload_files:
+            if os.path.exists(file["container_path"]):
+                print("Deleting temporary file: {}".format(file["container_path"]))
+                os.remove(file["container_path"])
 
 
 def main():
