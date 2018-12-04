@@ -167,7 +167,7 @@ class BCW():
                         container_path
                         )
                     )
-            except FileExistsError:
+            except OSError:
                 # Fine if this path already exists
                 pass
 
@@ -208,7 +208,7 @@ class BCW():
                         container_path
                         )
                     )
-            except FileExistsError:
+            except OSError:
                 # Fine if this path already exists
                 pass
 
@@ -250,7 +250,7 @@ class BCW():
             )
 
     def upload_files_to_bucket(self):
-        upload_files = self.upload_files+[f for f in self.download_files if f['mode']=='rw']
+        upload_files = self.upload_files+[f for f in self.download_files if f['mode'] == 'rw']
         for df in upload_files:
             if df['bucket_provider'] == 's3':
                 self.upload_file_s3(df)
